@@ -1,6 +1,6 @@
 package com.agliehackathon;
 
-import com.agilehackathon.practices.Practice;
+import com.agilehackathon.model.Practice;
 import com.googlecode.yatspec.junit.SpecRunner;
 import com.googlecode.yatspec.state.givenwhenthen.TestState;
 import com.googlecode.yatspec.state.givenwhenthen.WithTestState;

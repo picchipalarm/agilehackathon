@@ -3,6 +3,7 @@ package com.agilehackathon.configuration;
 
 import com.agilehackathon.login.CustomerDao;
 import com.agilehackathon.login.LoginService;
+import com.agilehackathon.practices.PracticeCustomerQueueDao;
 import com.agilehackathon.practices.PracticesDao;
 import com.agilehackathon.practices.PracticesService;
 import com.agilehackathon.status.StatusServlet;
@@ -69,17 +70,9 @@ public class WebServer {
 
     private void configureJersey(final ServletContextHandler servletContextHandler) {
 
-
-//        RestResourceConfig loginService = new RestResourceConfig(new LoginService(new CustomerDao()));
-//        loginService.registerServices();
-//
-//
-//        RestResourceConfig practicesService = new RestResourceConfig(new PracticesService(new CustomerDao(), new PracticesDao()));
-//        practicesService.registerServices();
-
         ResourceConfig resourceConfig = new ResourceConfig();
         resourceConfig.register(new LoginService(new CustomerDao()));
-        resourceConfig.register(new PracticesService(new CustomerDao(), new PracticesDao()));
+        resourceConfig.register(new PracticesService(new CustomerDao(), new PracticesDao(), new PracticeCustomerQueueDao()));
 
         ServletHolder jersey = new ServletHolder(new ServletContainer(resourceConfig));
         jersey.setName("jersey service servlet");

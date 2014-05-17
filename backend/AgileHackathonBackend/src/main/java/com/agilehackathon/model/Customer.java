@@ -1,4 +1,4 @@
-package com.agilehackathon.login;
+package com.agilehackathon.model;
 
 public class Customer {
 

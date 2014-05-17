@@ -1,6 +1,6 @@
 package com.agliehackathon;
 
-import com.agilehackathon.practices.Practice;
+import com.agilehackathon.model.Practice;
 import com.googlecode.yatspec.junit.SpecRunner;
 import com.googlecode.yatspec.state.givenwhenthen.TestState;
 import com.googlecode.yatspec.state.givenwhenthen.WithTestState;
@@ -9,6 +9,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -62,8 +63,8 @@ public class JoinPraticeQueueAcceptanceTest implements WithTestState {
         thenTheResponseContainsPracticeAndPosition(PRACTICE_1, 1);
 
     }
-    @Test
 
+    @Test
     public void multipleUsersCanJoinQueueSuccessfully() throws Exception {
         givenARegisteredUsername(USER_1);
 
@@ -78,16 +79,18 @@ public class JoinPraticeQueueAcceptanceTest implements WithTestState {
         thenTheResponseContainsPracticeAndPosition(PRACTICE_1, 2);
     }
 
-    private void thenTheResponseContainsPracticeAndPosition(Practice practice, int position) {
+    private void thenTheResponseContainsPracticeAndPosition(Practice practice, int position) throws JSONException {
 
         String expectedResponse =
-                "  {\n" +
-                "  {\n" +
-                "    \"id\": 1,\n" +
-                "    \"name\": \"Dr. Quinn Surgery\",\n" +
-                "    \"address\": \"Hoxton\",\n" +
-                "    \"location\": \"https://www.google.co.uk/maps/place/Hoxton+Square/@51.5273296,-0.0808067,17z/data=!3m1!4b1!4m2!3m1!1s0x48761cbadbc045ff:0x54292b8ccb0589c2\"\n" +
-                "  }";
+                "{\n" +
+                        "  \"practice\": {\n" +
+                        "    \"id\": 1,\n" +
+                        "    \"name\": \"Dr. Quinn Surgery\",\n" +
+                        "    \"address\": \"Hoxton\",\n" +
+                        "    \"location\": \"https:\\/\\/www.google.co.uk\\/maps\\/place\\/Hoxton+Square\\/@51.5273296,-0.0808067,17z\\/data=!3m1!4b1!4m2!3m1!1s0x48761cbadbc045ff:0x54292b8ccb0589c2\"\n" +
+                        "  },\n" +
+                        "  \"position\": "+position + "\n" +
+                        "}";
         yatspec.log("Expected Response", expectedResponse);
         yatspec.log("Actual Response", responseContent);
         JSONAssert.assertEquals(expectedResponse, responseContent, false);
@@ -115,7 +118,7 @@ public class JoinPraticeQueueAcceptanceTest implements WithTestState {
 
     private void whenTheJoinPracticeQueueServiceIsCalled() throws IOException {
         String url = StringUtils.replace(URI, "{practiceId}", "1");
-        url = StringUtils.replace(url, "{username}", "aram");
+        url = StringUtils.replace(url, "{username}", username);
         yatspec.log("URI", url);
         Response response = Request.Get(url)
                 .connectTimeout(1000)

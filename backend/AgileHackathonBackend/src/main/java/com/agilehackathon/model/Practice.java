@@ -1,4 +1,4 @@
-package com.agilehackathon.practices;
+package com.agilehackathon.model;
 
 public class Practice {
     private String name;
@@ -29,4 +29,5 @@ public class Practice {
     public String getLocation() {
         return location;
     }
+
 }

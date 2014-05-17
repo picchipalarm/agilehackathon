@@ -1,5 +1,7 @@
 package com.agilehackathon.practices;
 
+import com.agilehackathon.model.Practice;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,4 +18,7 @@ public class PracticesDao {
         return practices;
     }
 
+    public Practice findPracticeById(Integer practiceId) {
+        return null;
+    }
 }

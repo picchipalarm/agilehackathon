@@ -1,5 +1,7 @@
 package com.agilehackathon.login;
 
+import com.agilehackathon.model.Customer;
+
 import java.util.HashMap;
 import java.util.Map;
 
