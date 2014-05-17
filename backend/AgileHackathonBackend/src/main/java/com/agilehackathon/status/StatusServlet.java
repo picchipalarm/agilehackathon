@@ -1,4 +1,4 @@
-package com.agilehackathon;
+package com.agilehackathon.status;
 
 import javax.servlet.*;
 import java.io.IOException;

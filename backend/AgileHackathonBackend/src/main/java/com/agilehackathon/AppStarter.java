@@ -1,5 +1,6 @@
 package com.agilehackathon;
 
+import com.agilehackathon.configuration.WebServer;
 import org.eclipse.jetty.server.Server;
 
 public class AppStarter {

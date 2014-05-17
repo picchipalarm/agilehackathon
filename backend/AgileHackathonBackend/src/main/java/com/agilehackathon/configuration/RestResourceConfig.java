@@ -1,5 +1,6 @@
-package com.agilehackathon;
+package com.agilehackathon.configuration;
 
+import com.agilehackathon.login.LoginService;
 import org.glassfish.jersey.server.ResourceConfig;
 
 public class RestResourceConfig {

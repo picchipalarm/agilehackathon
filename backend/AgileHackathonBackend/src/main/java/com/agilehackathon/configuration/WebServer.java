@@ -1,6 +1,8 @@
-package com.agilehackathon;
+package com.agilehackathon.configuration;
 
 
+import com.agilehackathon.login.LoginService;
+import com.agilehackathon.status.StatusServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.DefaultHandler;
