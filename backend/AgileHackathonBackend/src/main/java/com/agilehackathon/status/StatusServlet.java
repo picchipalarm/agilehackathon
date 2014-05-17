@@ -1,35 +1,18 @@
 package com.agilehackathon.status;
 
 import javax.servlet.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class StatusServlet implements Servlet {
-    public StatusServlet() {
+public class StatusServlet extends HttpServlet {
 
-    }
-
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-
-    }
+    public static final String SUCCESS_MESSAGE = "OK DUDE";
 
     @Override
-    public ServletConfig getServletConfig() {
-        return null;
-    }
-
-    @Override
-    public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
-
-    }
-
-    @Override
-    public String getServletInfo() {
-        return null;
-    }
-
-    @Override
-    public void destroy() {
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().print(SUCCESS_MESSAGE);
     }
 }
