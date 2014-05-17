@@ -3,6 +3,8 @@ package com.agilehackathon.configuration;
 
 import com.agilehackathon.login.CustomerDao;
 import com.agilehackathon.login.LoginService;
+import com.agilehackathon.practices.PracticesDao;
+import com.agilehackathon.practices.PracticesService;
 import com.agilehackathon.status.StatusServlet;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -12,6 +14,7 @@ import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
 import java.io.IOException;
@@ -67,10 +70,18 @@ public class WebServer {
     private void configureJersey(final ServletContextHandler servletContextHandler) {
 
 
-        RestResourceConfig resourceConfig = new RestResourceConfig(new LoginService(new CustomerDao()));
-        resourceConfig.registerServices();
+//        RestResourceConfig loginService = new RestResourceConfig(new LoginService(new CustomerDao()));
+//        loginService.registerServices();
+//
+//
+//        RestResourceConfig practicesService = new RestResourceConfig(new PracticesService(new CustomerDao(), new PracticesDao()));
+//        practicesService.registerServices();
 
-        ServletHolder jersey = new ServletHolder(new ServletContainer(resourceConfig.resourceConfig()));
+        ResourceConfig resourceConfig = new ResourceConfig();
+        resourceConfig.register(new LoginService(new CustomerDao()));
+        resourceConfig.register(new PracticesService(new CustomerDao(), new PracticesDao()));
+
+        ServletHolder jersey = new ServletHolder(new ServletContainer(resourceConfig));
         jersey.setName("jersey service servlet");
         servletContextHandler.addServlet(jersey, "/agilehackathon/rest/*");
     }

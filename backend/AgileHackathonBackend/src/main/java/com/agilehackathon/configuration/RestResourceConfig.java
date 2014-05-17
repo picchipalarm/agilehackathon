@@ -1,19 +1,18 @@
 package com.agilehackathon.configuration;
 
-import com.agilehackathon.login.LoginService;
 import org.glassfish.jersey.server.ResourceConfig;
 
 public class RestResourceConfig {
 
-   private final LoginService loginService;
+   private final Object service;
    private final ResourceConfig resourceConfig = new ResourceConfig();
 
-   public RestResourceConfig(final LoginService loginService) {
-       this.loginService = loginService;
+   public RestResourceConfig(final Object service) {
+       this.service = service;
    }
 
    public void registerServices() {
-       resourceConfig.register(loginService);
+       resourceConfig.register(service);
    }
 
    public ResourceConfig resourceConfig() {

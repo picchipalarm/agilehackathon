@@ -47,4 +47,5 @@ dependencies {
     testCompile 'com.googlecode.yatspec:yatspec:214'
     testCompile 'org.apache.httpcomponents:httpclient:4.3'
     testCompile 'org.apache.httpcomponents:fluent-hc:4.3.1'
+    testCompile 'org.skyscreamer:jsonassert:1.2.3'
 }

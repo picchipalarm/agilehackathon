@@ -10,6 +10,7 @@ public class CustomerDao {
     public CustomerDao() {
         registeredUsers.put("aram", new Customer("aram", "0207"));
         registeredUsers.put("mattia", new Customer("mattia", "0208"));
+        registeredUsers.put("hendrik", new Customer("hendrik", "0209"));
     }
 
     public boolean isCustomerRegistered(String validUserName) {
