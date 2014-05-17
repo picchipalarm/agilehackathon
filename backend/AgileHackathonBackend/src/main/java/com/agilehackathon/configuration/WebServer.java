@@ -30,6 +30,7 @@ public class WebServer {
         ServletContextHandler servletContextHandler = configureServlets("/");
         setServerHandlers(servletContextHandler);
         jetty.start();
+        System.out.println("started!!!");
 
     }
 
