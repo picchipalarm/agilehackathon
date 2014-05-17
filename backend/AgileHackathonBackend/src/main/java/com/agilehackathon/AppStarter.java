@@ -9,6 +9,4 @@ public class AppStarter {
         new WebServer(new Server()).start();
     }
 
-
-
 }
