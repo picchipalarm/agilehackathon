@@ -19,6 +19,11 @@ public class PracticesDao {
     }
 
     public Practice findPracticeById(Integer practiceId) {
+        for (Practice practice : practices) {
+            if(practice.getId() == practiceId){
+                return practice;
+            }
+        }
         return null;
     }
 }

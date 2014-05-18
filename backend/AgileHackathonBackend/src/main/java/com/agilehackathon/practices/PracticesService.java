@@ -61,15 +61,25 @@ public class PracticesService {
         }
 
         Practice practice = practicesDao.findPracticeById(practiceId);
+        // TODO what if the practice doesnt exist?
 
         try {
             int position = practiceCustomerQueueDao.joinQueue(practice, username);
             return new JoinResponse(practice, position);
         } catch (PracticeCustomerQueueDao.CustomerAlreadyJoinedException e) {
-            System.out.println("fail see exception message");
+            System.out.println("fail see exception message CustomerAlreadyJoinedException");
             return error(response, STATUS_ERROR);
         }
 
+    }
+
+    @GET
+    @Path("resetAllQueues")
+    public Response resetAllQueues(){
+        System.out.println("Resetting all queues...");
+        practiceCustomerQueueDao.resetAllQueues();
+        System.out.println("Reset all queues");
+        return Response.status(200).build();
     }
 
     private JoinResponse error(HttpServletResponse response, int statusCode) throws IOException {

@@ -10,6 +10,7 @@ import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -33,6 +34,11 @@ public class JoinPraticeQueueAcceptanceTest implements WithTestState {
     private String username;
     private String responseContent;
 
+    @Before
+    public void setUp() throws Exception {
+        resetAllQueues();
+    }
+
     @Test
     public void returns403WhenUsernameNotRegistered() throws Exception {
         givenAUnregisteredUsername();
@@ -42,6 +48,7 @@ public class JoinPraticeQueueAcceptanceTest implements WithTestState {
         thenTheServiceRespondsWithStatus(403);
 
     }
+
     @Test
     public void returns500WhenUsernameAlreadyInQueue() throws Exception {
 
@@ -53,7 +60,6 @@ public class JoinPraticeQueueAcceptanceTest implements WithTestState {
         thenTheServiceRespondsWithStatus(500);
 
     }
-
     @Test
     public void returnsQueuePositionAndPracticeWhenJoiningSuccessfully() throws Exception {
         givenARegisteredUsername(USER_1);
@@ -96,10 +102,10 @@ public class JoinPraticeQueueAcceptanceTest implements WithTestState {
         JSONAssert.assertEquals(expectedResponse, responseContent, false);
     }
 
-
     private void thenTheResponseContains(Practice practice1) {
 
     }
+
 
     @Override
     public TestState testState() {
@@ -131,5 +137,12 @@ public class JoinPraticeQueueAcceptanceTest implements WithTestState {
     private void thenTheServiceRespondsWithStatus(int status) {
         yatspec.log("httpResponse Code", httpResponse.getStatusLine().getStatusCode());
         assertThat(httpResponse.getStatusLine().getStatusCode()).isEqualTo(status);
+    }
+
+    private void resetAllQueues() throws IOException {
+        Request.Get("http://localhost:8080/agilehackathon/rest/practices/resetAllQueues")
+                .connectTimeout(1000)
+                .socketTimeout(1000)
+                .execute();
     }
 }
