@@ -50,10 +50,6 @@ public class PracticesService {
         }
     }
 
-    private Response response(int status) {
-        return Response.status(status).build();
-    }
-
     @GET
     @Path("{practiceId}/joinQueue/{username}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -61,25 +57,25 @@ public class PracticesService {
         boolean customerRegistered = customerDao.isCustomerRegistered(username);
         if(!customerRegistered){
             System.out.println("Access to practice service failed");
-            response.setStatus(STATUS_FORBIDDEN);
-            response.getOutputStream().close();
-            return null;
+            return error(response, STATUS_FORBIDDEN);
         }
 
         Practice practice = practicesDao.findPracticeById(practiceId);
 
-        int position = 0;
         try {
-            position = practiceCustomerQueueDao.joinQueue(practice, username);
+            int position = practiceCustomerQueueDao.joinQueue(practice, username);
+            return new JoinResponse(practice, position);
         } catch (PracticeCustomerQueueDao.CustomerAlreadyJoinedException e) {
             System.out.println("fail see exception message");
-            response.setStatus(STATUS_ERROR);
-            response.getOutputStream().close();
-            return null;
+            return error(response, STATUS_ERROR);
         }
 
-        JoinResponse result = new JoinResponse(practice, position);
-        return result;
+    }
+
+    private JoinResponse error(HttpServletResponse response, int statusCode) throws IOException {
+        response.setStatus(statusCode);
+        response.getOutputStream().close();
+        return null;
     }
 
     public class JoinResponse {
