@@ -41,6 +41,8 @@ dependencies {
     compile 'org.glassfish.jersey.containers:jersey-container-servlet:2.4.1'
     compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.2.3'
     compile 'org.apache.commons:commons-lang3:3.3.2'
+    compile 'com.twilio.sdk:twilio-java-sdk:3.4.4'
+
 
     testCompile 'org.mockito:mockito-all:1.9.5'
     testCompile 'org.easytesting:fest-assert:1.4'

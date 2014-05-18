@@ -1,5 +1,6 @@
 package com.agilehackathon.login;
 
+import com.agilehackathon.twillio.Twilio;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
@@ -13,7 +14,8 @@ public class LoginServiceTest {
     public static final String VALID_USER_NAME = "ValidUserName";
     public static final String INVALID_USER_NAME = "InValidUserName";
     CustomerDao customerDao = mock(CustomerDao.class);
-    LoginService loginService = new LoginService(customerDao);
+    Twilio twilio = mock(Twilio.class);
+    LoginService loginService = new LoginService(customerDao, twilio);
 
 
     @Test

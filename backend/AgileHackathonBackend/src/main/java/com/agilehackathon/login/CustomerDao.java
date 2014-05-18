@@ -10,12 +10,16 @@ public class CustomerDao {
     Map<String , Customer> registeredUsers = new HashMap<>();
 
     public CustomerDao() {
-        registeredUsers.put("aram", new Customer("aram", "0207"));
-        registeredUsers.put("mattia", new Customer("mattia", "0208"));
-        registeredUsers.put("hendrik", new Customer("hendrik", "0209"));
+        registeredUsers.put("aram", new Customer("aram", "123"));
+        registeredUsers.put("mattia", new Customer("mattia", "456"));
+        registeredUsers.put("hendrik", new Customer("hendrik", "789"));
     }
 
     public boolean isCustomerRegistered(String validUserName) {
         return registeredUsers.containsKey(validUserName);
+    }
+
+    public Customer findCustomerByUsername(String username) {
+        return registeredUsers.get(username);
     }
 }

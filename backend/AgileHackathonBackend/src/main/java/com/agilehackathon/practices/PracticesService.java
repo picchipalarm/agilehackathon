@@ -2,8 +2,11 @@ package com.agilehackathon.practices;
 
 
 import com.agilehackathon.login.CustomerDao;
+import com.agilehackathon.model.Customer;
 import com.agilehackathon.model.Practice;
 import com.agilehackathon.model.PracticeCustomerQueue;
+import com.agilehackathon.twillio.Twilio;
+import com.twilio.sdk.TwilioRestException;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
@@ -17,20 +20,39 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.agilehackathon.practices.PracticeCustomerQueueDao.CustomerAlreadyJoinedException;
+
 @Path("practices")
 public class PracticesService {
 
     public static final int STATUS_FORBIDDEN = 403;
     public static final int STATUS_ERROR = 500;
+    private static final String QUEUE_JOINED_CONFIRMATION_TEXT =
+            "Quanda thanks you for joining the queue! Here's your second badge\n" +
+                    "░░░░░░░░▄██▄░░░░░░▄▄░░\n" +
+                    "░░░░░░░▐███▀░░░░░▄███▌\n" +
+                    "░░▄▀░░▄█▀▀░░░░░░░░▀██░\n" +
+                    "░█░░░██░░░░░░░░░░░░░░░\n" +
+                    "█▌░░▐██░░▄██▌░░▄▄▄░░░▄\n" +
+                    "██░░▐██▄░▀█▀░░░▀██░░▐▌\n" +
+                    "██▄░▐███▄▄░░▄▄▄░▀▀░▄██\n" +
+                    "▐███▄██████▄░▀░▄█████▌\n" +
+                    "▐████████████▀▀██████░\n" +
+                    "░▐████▀██████░░█████░░\n" +
+                    "░░░▀▀▀░░█████▌░████▀░░\n" +
+                    "░░░░░░░░░▀▀███░▀▀▀░░░░ ";
+
 
     private final CustomerDao customerDao;
     private final PracticesDao practicesDao;
     private final PracticeCustomerQueueDao practiceCustomerQueueDao;
+    private Twilio twilio;
 
-    public PracticesService(CustomerDao customerDao, PracticesDao practicesDao, PracticeCustomerQueueDao practiceCustomerQueueDao) {
+    public PracticesService(CustomerDao customerDao, PracticesDao practicesDao, PracticeCustomerQueueDao practiceCustomerQueueDao, Twilio twilio) {
         this.customerDao = customerDao;
         this.practicesDao = practicesDao;
         this.practiceCustomerQueueDao = practiceCustomerQueueDao;
+        this.twilio = twilio;
     }
 
 
@@ -43,6 +65,7 @@ public class PracticesService {
         boolean customerRegistered = customerDao.isCustomerRegistered(username);
         if (customerRegistered) {
             System.out.println("Access to practice service list successful");
+            response.addHeader("Access-Control-Allow-Origin", "*");
             return practicesDao.findAllPractices();
         } else {
             System.out.println("Access to practice service list failed");
@@ -55,7 +78,7 @@ public class PracticesService {
     @GET
     @Path("{practiceId}/joinQueue/{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    public JoinResponse joinPracticeQueue(@PathParam("username") String username, @PathParam("practiceId") Integer practiceId, @Context HttpServletResponse response) throws IOException {
+    public JoinResponse joinPracticeQueue(@PathParam("username") String username, @PathParam("practiceId") Integer practiceId, @Context HttpServletResponse response) throws IOException, TwilioRestException {
         boolean customerRegistered = customerDao.isCustomerRegistered(username);
         if (!customerRegistered) {
             System.out.println("Access to practice service join failed");
@@ -69,8 +92,9 @@ public class PracticesService {
             int position = practiceCustomerQueueDao.joinQueue(practice, username);
             System.out.println("Access to practice service join successful");
             System.out.println("Position " + position + ", practice id " + practice.getId() + ", practice name " + practice.getName());
+            sendConfirmationToCustomer(username);
             return new JoinResponse(practice, position);
-        } catch (PracticeCustomerQueueDao.CustomerAlreadyJoinedException e) {
+        } catch (CustomerAlreadyJoinedException e) {
             System.out.println("fail see exception message CustomerAlreadyJoinedException");
             return error(response, STATUS_ERROR);
         }
@@ -111,10 +135,30 @@ public class PracticesService {
         return Response.status(200).build();
     }
 
+    @GET
+    @Path("/doNotCallThis/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response doNotCallThis(@PathParam("username") String username) throws IOException, TwilioRestException {
+        Customer customer = customerDao.findCustomerByUsername(username);
+        twilio.sendSms(customer.getPhoneNumber(), "Oh boy, you shouldn't have done that!\n" +
+                "    |\\   /|\n" +
+                "      \\|_|/\n" +
+                "      /. .\\\n" +
+                "     =\\_Y_/=\n" +
+                "      {>o<}");
+        return Response.status(200).build();
+    }
+
+
     private JoinResponse error(HttpServletResponse response, int statusCode) throws IOException {
         response.setStatus(statusCode);
         response.getOutputStream().close();
         return null;
+    }
+
+    private void sendConfirmationToCustomer(String username) throws TwilioRestException {
+        Customer customer = customerDao.findCustomerByUsername(username);
+        twilio.sendSms(customer.getPhoneNumber(), QUEUE_JOINED_CONFIRMATION_TEXT);
     }
 
     public class QueueStatusResponse {

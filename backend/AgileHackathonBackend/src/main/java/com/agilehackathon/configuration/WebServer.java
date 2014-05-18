@@ -7,6 +7,7 @@ import com.agilehackathon.practices.PracticeCustomerQueueDao;
 import com.agilehackathon.practices.PracticesDao;
 import com.agilehackathon.practices.PracticesService;
 import com.agilehackathon.status.StatusServlet;
+import com.agilehackathon.twillio.Twilio;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -71,8 +72,8 @@ public class WebServer {
     private void configureJersey(final ServletContextHandler servletContextHandler) {
 
         ResourceConfig resourceConfig = new ResourceConfig();
-        resourceConfig.register(new LoginService(new CustomerDao()));
-        resourceConfig.register(new PracticesService(new CustomerDao(), new PracticesDao(), new PracticeCustomerQueueDao()));
+        resourceConfig.register(new LoginService(new CustomerDao(), new Twilio()));
+        resourceConfig.register(new PracticesService(new CustomerDao(), new PracticesDao(), new PracticeCustomerQueueDao(), new Twilio()));
 
         ServletHolder jersey = new ServletHolder(new ServletContainer(resourceConfig));
         jersey.setName("jersey service servlet");

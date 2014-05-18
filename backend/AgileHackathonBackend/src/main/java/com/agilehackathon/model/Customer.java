@@ -14,4 +14,7 @@ public class Customer {
         return username;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 }

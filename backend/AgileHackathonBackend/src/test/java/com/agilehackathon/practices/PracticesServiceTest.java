@@ -1,7 +1,9 @@
 package com.agilehackathon.practices;
 
 import com.agilehackathon.login.CustomerDao;
+import com.agilehackathon.model.Customer;
 import com.agilehackathon.model.Practice;
+import com.agilehackathon.twillio.Twilio;
 import org.junit.Test;
 
 import javax.servlet.ServletOutputStream;
@@ -23,7 +25,8 @@ public class PracticesServiceTest {
     PracticeCustomerQueueDao practiceCustomerQueueDao = mock(PracticeCustomerQueueDao.class);
     HttpServletResponse response = mock(HttpServletResponse.class);
     ServletOutputStream servletOutputStream = mock(ServletOutputStream.class);
-    PracticesService practicesService = new PracticesService(customerDao, practicesDao, practiceCustomerQueueDao);
+    Twilio twilio = mock(Twilio.class);
+    PracticesService practicesService = new PracticesService(customerDao, practicesDao, practiceCustomerQueueDao, twilio);
 
     @Test
     public void respondsWith403WhenUsernameIsInvalid() throws Exception {
@@ -106,5 +109,6 @@ public class PracticesServiceTest {
 
     private void givenARegisteredUser() {
         when(customerDao.isCustomerRegistered(VALID_USER_NAME)).thenReturn(true);
+        when(customerDao.findCustomerByUsername(VALID_USER_NAME)).thenReturn(new Customer(VALID_USER_NAME, "1234"));
     }
 }
