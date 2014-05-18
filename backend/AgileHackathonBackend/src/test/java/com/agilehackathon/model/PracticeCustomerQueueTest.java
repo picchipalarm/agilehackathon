@@ -53,4 +53,21 @@ public class PracticeCustomerQueueTest {
         assertThat(practiceCustomerQueue.getCustomerPositionInQueue("someuser3")).isEqualTo(3);
     }
 
+    @Test
+    public void initiallyServesFirstCustomer() throws Exception {
+        int servingCustomer = practiceCustomerQueue.serveCustomer();
+
+        assertThat(servingCustomer).isEqualTo(1);
+    }
+
+    @Test
+    public void servesNextCustomer() throws Exception {
+        practiceCustomerQueue.serveCustomer();
+        practiceCustomerQueue.serveCustomer();
+        int servingCustomer = practiceCustomerQueue.serveCustomer();
+
+        assertThat(servingCustomer).isEqualTo(3);
+    }
+
+
 }

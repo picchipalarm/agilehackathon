@@ -34,7 +34,6 @@ public class PracticesService {
     }
 
 
-
     @GET
     @Path("{username}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -42,7 +41,7 @@ public class PracticesService {
         System.out.println("Attempting to login customer with username: [" + username + "]");
 
         boolean customerRegistered = customerDao.isCustomerRegistered(username);
-        if(customerRegistered){
+        if (customerRegistered) {
             System.out.println("Access to practice service list successful");
             return practicesDao.findAllPractices();
         } else {
@@ -58,7 +57,7 @@ public class PracticesService {
     @Produces(MediaType.APPLICATION_JSON)
     public JoinResponse joinPracticeQueue(@PathParam("username") String username, @PathParam("practiceId") Integer practiceId, @Context HttpServletResponse response) throws IOException {
         boolean customerRegistered = customerDao.isCustomerRegistered(username);
-        if(!customerRegistered){
+        if (!customerRegistered) {
             System.out.println("Access to practice service join failed");
             return error(response, STATUS_FORBIDDEN);
         }
@@ -69,7 +68,7 @@ public class PracticesService {
         try {
             int position = practiceCustomerQueueDao.joinQueue(practice, username);
             System.out.println("Access to practice service join successful");
-            System.out.println("Position " + position + ", practice id " + practice.getId()  + ", practice name " + practice.getName() );
+            System.out.println("Position " + position + ", practice id " + practice.getId() + ", practice name " + practice.getName());
             return new JoinResponse(practice, position);
         } catch (PracticeCustomerQueueDao.CustomerAlreadyJoinedException e) {
             System.out.println("fail see exception message CustomerAlreadyJoinedException");
@@ -83,21 +82,32 @@ public class PracticesService {
     @Produces(MediaType.APPLICATION_JSON)
     public QueueStatusResponse practiceStatusQueue(@PathParam("username") String username, @PathParam("practiceId") Integer practiceId, @Context HttpServletResponse response) throws IOException {
         Practice practice = practicesDao.findPracticeById(practiceId);
-
         PracticeCustomerQueue queuebyPractice = practiceCustomerQueueDao.findQueuebyPractice(practice);
 
         Integer serving = queuebyPractice.getServing();
 
         int customerPositionInQueue = queuebyPractice.getCustomerPositionInQueue(username);
+        System.out.println("practiceStatusQueue for practice: " + practiceId + " position: " + customerPositionInQueue + ", serving: " + serving);
         return new QueueStatusResponse(customerPositionInQueue, serving);
     }
 
     @GET
     @Path("resetAllQueues")
-    public Response resetAllQueues(){
+    public Response resetAllQueues() {
         System.out.println("Resetting all queues...");
         practiceCustomerQueueDao.resetAllQueues();
         System.out.println("Reset all queues");
+        return Response.status(200).build();
+    }
+
+    @GET
+    @Path("{practiceId}/serveNextCustomer")
+    public Response serveNextCustomer(@PathParam("practiceId") Integer practiceId) {
+        System.out.println("serving next customer for practice " + practiceId);
+        Practice practice = practicesDao.findPracticeById(practiceId);
+        PracticeCustomerQueue queuebyPractice = practiceCustomerQueueDao.findQueuebyPractice(practice);
+        int serving = queuebyPractice.serveCustomer();
+        System.out.println("Serving customer " + serving);
         return Response.status(200).build();
     }
 

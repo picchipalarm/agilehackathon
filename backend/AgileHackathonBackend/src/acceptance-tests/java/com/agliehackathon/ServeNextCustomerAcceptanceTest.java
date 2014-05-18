@@ -7,13 +7,13 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
 import org.apache.http.util.EntityUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.Fail.fail;
 
 @RunWith(SpecRunner.class)
 public class ServeNextCustomerAcceptanceTest implements WithTestState {
@@ -26,6 +26,17 @@ public class ServeNextCustomerAcceptanceTest implements WithTestState {
     private HttpResponse httpResponse;
     private String responseContent;
     private int statusCode;
+    @Before
+    public void setUp() throws Exception {
+        resetAllQueues();
+    }
+
+    private void resetAllQueues() throws IOException {
+        Request.Get("http://localhost:8080/agilehackathon/rest/practices/resetAllQueues")
+                .connectTimeout(1000)
+                .socketTimeout(1000)
+                .execute();
+    }
 
     @Test
     public void returns200AfterServingACustomer() throws Exception {
@@ -84,7 +95,7 @@ public class ServeNextCustomerAcceptanceTest implements WithTestState {
     }
 
     private void thenThePracticeIsServiceNextCustomer() throws IOException {
-        String url = "http://localhost:8080/agilehackathon/rest/practices/" + PRACTICE_ID + "/status/" + USERNAME_1;
+        String url = "http://localhost:8080/agilehackathon/rest/practices/" + PRACTICE_ID + "/status/" + USERNAME_3;
         Response response = Request.Get(url)
                 .connectTimeout(1000)
                 .socketTimeout(1000)
@@ -92,10 +103,10 @@ public class ServeNextCustomerAcceptanceTest implements WithTestState {
         httpResponse = response.returnResponse();
         responseContent = EntityUtils.toString(httpResponse.getEntity());
         statusCode = httpResponse.getStatusLine().getStatusCode();
-        yatspec.log("Practice Queue Status - status code", statusCode);
-        yatspec.log("Practice Queue Status - Full Response", responseContent);
+        yatspec.log("Practice Queue Status for user " + USERNAME_3 + " - status code", statusCode);
+        yatspec.log("Practice Queue Status for user " + USERNAME_3 + "- Full Response", responseContent);
 
-        assertThat(responseContent).contains("serving: 2");
+        assertThat(responseContent).contains("\"serving\":1");
     }
 
     @Override

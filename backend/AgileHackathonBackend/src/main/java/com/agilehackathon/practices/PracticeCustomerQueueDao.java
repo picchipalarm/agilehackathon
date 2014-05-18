@@ -10,7 +10,6 @@ public class PracticeCustomerQueueDao {
 
     Map<Integer, PracticeCustomerQueue> queueMap = new HashMap<>();
 
-
     public int joinQueue(Practice practice, String username) {
 
         PracticeCustomerQueue queue = findQueuebyPractice(practice);

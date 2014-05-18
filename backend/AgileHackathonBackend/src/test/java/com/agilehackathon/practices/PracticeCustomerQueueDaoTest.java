@@ -11,10 +11,14 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class PracticeCustomerQueueDaoTest {
+
     @Rule
     public ExpectedException exception = ExpectedException.none();
+
     public static final String VALID_USERNAME = "username";
+
     PracticeCustomerQueueDao practiceCustomerQueueDao = new PracticeCustomerQueueDao();
+
     Practice practice = mock(Practice.class);
 
     @Test
@@ -42,8 +46,6 @@ public class PracticeCustomerQueueDaoTest {
         practiceCustomerQueueDao.joinQueue(practice, VALID_USERNAME);
         exception.expect(CustomerAlreadyJoinedException.class);
         practiceCustomerQueueDao.joinQueue(practice, VALID_USERNAME);
-
-
     }
 
     private void givenCustomersInTheQueue(int numberOfCustomersInQueue) {

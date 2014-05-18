@@ -41,4 +41,8 @@ public class PracticeCustomerQueue {
         }
         return 0;
     }
+
+    public int serveCustomer() {
+        return ++serving;
+    }
 }
