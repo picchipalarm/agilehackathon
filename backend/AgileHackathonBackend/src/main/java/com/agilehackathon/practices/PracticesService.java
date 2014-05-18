@@ -3,6 +3,7 @@ package com.agilehackathon.practices;
 
 import com.agilehackathon.login.CustomerDao;
 import com.agilehackathon.model.Practice;
+import com.agilehackathon.model.PracticeCustomerQueue;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
@@ -32,6 +33,8 @@ public class PracticesService {
         this.practiceCustomerQueueDao = practiceCustomerQueueDao;
     }
 
+
+
     @GET
     @Path("{username}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -40,10 +43,10 @@ public class PracticesService {
 
         boolean customerRegistered = customerDao.isCustomerRegistered(username);
         if(customerRegistered){
-            System.out.println("Access to practice service successful");
+            System.out.println("Access to practice service list successful");
             return practicesDao.findAllPractices();
         } else {
-            System.out.println("Access to practice service failed");
+            System.out.println("Access to practice service list failed");
             response.setStatus(STATUS_FORBIDDEN);
             response.getOutputStream().close();
             return new ArrayList<>();
@@ -56,7 +59,7 @@ public class PracticesService {
     public JoinResponse joinPracticeQueue(@PathParam("username") String username, @PathParam("practiceId") Integer practiceId, @Context HttpServletResponse response) throws IOException {
         boolean customerRegistered = customerDao.isCustomerRegistered(username);
         if(!customerRegistered){
-            System.out.println("Access to practice service failed");
+            System.out.println("Access to practice service join failed");
             return error(response, STATUS_FORBIDDEN);
         }
 
@@ -65,12 +68,28 @@ public class PracticesService {
 
         try {
             int position = practiceCustomerQueueDao.joinQueue(practice, username);
+            System.out.println("Access to practice service join successful");
+            System.out.println("Position " + position + ", practice id " + practice.getId()  + ", practice name " + practice.getName() );
             return new JoinResponse(practice, position);
         } catch (PracticeCustomerQueueDao.CustomerAlreadyJoinedException e) {
             System.out.println("fail see exception message CustomerAlreadyJoinedException");
             return error(response, STATUS_ERROR);
         }
 
+    }
+
+    @GET
+    @Path("{practiceId}/status/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public QueueStatusResponse practiceStatusQueue(@PathParam("username") String username, @PathParam("practiceId") Integer practiceId, @Context HttpServletResponse response) throws IOException {
+        Practice practice = practicesDao.findPracticeById(practiceId);
+
+        PracticeCustomerQueue queuebyPractice = practiceCustomerQueueDao.findQueuebyPractice(practice);
+
+        Integer serving = queuebyPractice.getServing();
+
+        int customerPositionInQueue = queuebyPractice.getCustomerPositionInQueue(username);
+        return new QueueStatusResponse(customerPositionInQueue, serving);
     }
 
     @GET
@@ -86,6 +105,25 @@ public class PracticesService {
         response.setStatus(statusCode);
         response.getOutputStream().close();
         return null;
+    }
+
+    public class QueueStatusResponse {
+
+        private int serving;
+        private int position;
+
+        public QueueStatusResponse(int position, int serving) {
+            this.serving = serving;
+            this.position = position;
+        }
+
+        public int getServing() {
+            return serving;
+        }
+
+        public int getPosition() {
+            return position;
+        }
     }
 
     public class JoinResponse {

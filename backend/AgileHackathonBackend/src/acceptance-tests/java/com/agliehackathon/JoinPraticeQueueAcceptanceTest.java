@@ -125,7 +125,7 @@ public class JoinPraticeQueueAcceptanceTest implements WithTestState {
     private void whenTheJoinPracticeQueueServiceIsCalled() throws IOException {
         String url = StringUtils.replace(URI, "{practiceId}", "1");
         url = StringUtils.replace(url, "{username}", username);
-        yatspec.log("URI", url);
+        yatspec.log("JOIN_URL", url);
         Response response = Request.Get(url)
                 .connectTimeout(1000)
                 .socketTimeout(1000)

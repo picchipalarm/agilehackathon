@@ -29,7 +29,7 @@ public class PracticeCustomerQueueDao {
         practiceCustomerQueue.addCustomerToQueue(practice, username, customerPosition);
     }
 
-    private PracticeCustomerQueue findQueuebyPractice(Practice practice) {
+    public PracticeCustomerQueue findQueuebyPractice(Practice practice) {
 
         boolean queueExists = queueMap.containsKey(practice.getId());
 

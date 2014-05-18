@@ -53,7 +53,7 @@ public class LoginServiceAcceptanceTest implements WithTestState {
     }
 
     private void whenTheLoginServiceIsCalled() throws IOException {
-        yatspec.log("URI", URI + username);
+        yatspec.log("JOIN_URL", URI + username);
         httpResponse = Request.Get(URI + username)
                 .connectTimeout(1000)
                 .socketTimeout(1000)

@@ -96,7 +96,7 @@ public class ListPracticesServiceAcceptanceTest implements WithTestState {
     }
 
     private void whenThePracticesServiceIsCalled() throws IOException {
-        yatspec.log("URI", URI + username);
+        yatspec.log("JOIN_URL", URI + username);
         Response response = Request.Get(URI + username)
                 .connectTimeout(1000)
                 .socketTimeout(1000)
